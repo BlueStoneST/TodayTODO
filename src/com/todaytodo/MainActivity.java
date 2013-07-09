@@ -82,7 +82,8 @@ import android.widget.AdapterView.OnItemClickListener;
 /**
  * 
  * @author Sunny
- *
+ * @date 2013/7/9
+ * 
  */
 
 public class MainActivity extends ActivityBase {
