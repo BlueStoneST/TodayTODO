@@ -5,6 +5,12 @@ import com.todaytodo.model.ModelCenter;
 
 import android.app.Activity;
 
+/**
+ * 
+ * @author Sunny
+ *
+ */
+
 public class ActivityBase extends Activity {
 	protected ControllerCenter controller;
 	protected ModelCenter model;
