@@ -1,0 +1,287 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+	
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:addStatesFromChildren="true"
+        android:orientation="vertical" >
+		
+        <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:background="@color/sys_blue">
+	        <ImageView 
+	            android:layout_margin="2dp"
+	            android:layout_width="70dp"
+	            android:layout_height="70dp"
+	            android:src="@drawable/user">
+	        </ImageView>
+	        <LinearLayout
+	            android:layout_width="fill_parent"
+	        	android:layout_height="wrap_content"
+	        	android:orientation="vertical"
+	        	android:padding="10dp">
+ 				<LinearLayout
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content">
+	            <TextView
+	                android:id="@+id/user_textView"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="GreatST"
+	                android:textAppearance="?android:attr/textAppearanceMedium" />
+					<ImageView 
+			            android:layout_marginLeft="2dp"
+			            android:layout_width="20dp"
+			            android:layout_height="20dp"
+			            android:src="@drawable/sina_gray_small"/>
+				</LinearLayout>
+	            <TextView
+	                android:id="@+id/user_tomato_textView"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="累计番茄:25"
+	                android:textAppearance="?android:attr/textAppearanceSmall" />
+	            
+	        </LinearLayout>
+        </LinearLayout>
+        
+	       
+        <RelativeLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:padding="10dp"
+	        >
+
+	        <ImageView
+	            android:id="@+id/pre_imageView"
+	            android:layout_width="50dp"
+	            android:layout_height="50dp"
+	            android:layout_alignParentLeft="true"
+	            android:layout_centerVertical="true"
+	            android:contentDescription="前一天"
+	            android:src="@drawable/left_arrow" >
+	            
+	        </ImageView>
+
+	        <LinearLayout
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:gravity="center"
+	            android:orientation="vertical" 
+	            android:layout_centerInParent="true" 
+	            >
+
+	            <TextView
+	                android:id="@+id/textViewTitle"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="我的待办事项"
+	                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+	            <TextView
+	                android:id="@+id/textViewDate"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="2013-6-1（今日）"
+	                android:textAppearance="?android:attr/textAppearanceSmall" />
+	        </LinearLayout>
+
+	        <ImageView
+	            android:id="@+id/next_imageView"
+	            android:layout_width="50dp"
+	            android:layout_height="50dp"
+	            android:layout_alignParentRight="true"
+	            android:layout_centerHorizontal="false"
+	            android:layout_centerVertical="true"
+	            android:contentDescription="后一天"
+	            android:src="@drawable/right_arrow" >
+
+	        </ImageView>
+	        
+	    </RelativeLayout>
+
+		<View  
+		   android:layout_width="fill_parent"  
+		   android:layout_height="0.5dp" 
+		   android:background="@color/sys_blue"  
+		/>
+
+		
+		<!-- 
+        <ListView
+            android:id="@+id/thing_viewList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            
+        </ListView>
+		-->
+		<ScrollView
+		    android:id="@+id/scroll_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+	    	<RelativeLayout
+	    	    android:layout_width="match_parent"
+	    	    android:layout_height="wrap_content">
+	            
+	    	<RelativeLayout
+	    	    android:id="@+id/refresh_layout"
+	    	    android:layout_width="match_parent"
+	    	    android:layout_height="0dp"
+	    	    android:padding="10dp">
+
+	    	    <TextView
+	    	        android:id = "@+id/refresh_textView"
+	                android:layout_width="wrap_content"
+	                android:layout_height="wrap_content"
+	                android:text="下拉添加任务..."
+	                android:textAppearance="?android:attr/textAppearanceSmall"
+	                android:layout_centerInParent="true"
+	                android:textColor="@color/sys_gray"/>
+	    	</RelativeLayout>
+	        <LinearLayout
+			    android:id="@+id/list_layout"
+			    android:layout_below="@id/refresh_layout"
+			    android:orientation="vertical"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content">
+		        
+		    </LinearLayout>
+		    
+			<LinearLayout
+				    android:orientation="vertical"
+				    android:layout_below="@id/list_layout"
+				    android:layout_width="match_parent"
+				    android:layout_height="wrap_content"
+				    android:gravity="center"
+				    android:padding="10dp"
+				    android:background="@color/sys_gray">
+			        	<TextView
+			        	    android:id="@+id/come_on_textView"
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:text="今日番茄（4/9）  加油!"/>
+		    </LinearLayout>
+	        
+	        </RelativeLayout>
+	    
+	    </ScrollView>
+		
+	    
+    </LinearLayout>
+    
+    
+<!--     <RelativeLayout
+        android:id="@+id/cover_layout0"
+        android:layout_width="fill_parent"
+        android:layout_height="150dp"
+        android:background="@color/sys_transparent" 
+        android:visibility="invisible">
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/cover_layout1"
+        android:layout_width="fill_parent"
+        android:layout_height="150dp"
+        android:background="@color/sys_transparent" 
+        android:visibility="invisible">
+    </RelativeLayout>
+    
+
+    <RelativeLayout
+        android:id="@+id/path_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="169.5dp"
+        android:layout_marginTop="70dp"
+        android:gravity="top"
+        android:visibility="invisible">
+
+		<TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="12sp"
+	        android:layout_marginTop="8.5dp"
+	        android:layout_marginLeft="37.5dp"
+	        android:textColor="@color/sys_gray"
+	        android:text="因故拖延" />
+		<TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="12sp"
+	        android:layout_marginTop="31dp"
+	        android:layout_marginLeft="10dp"
+	        android:textColor="@color/sys_gray"
+	        android:text="无故拖延" />
+		<TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="12sp"
+	        android:layout_marginTop="68.5dp"
+	        android:layout_marginLeft="0dp"
+	        android:textColor="@color/sys_gray"
+	        android:text="完成任务" />
+		<TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="12sp"
+	        android:layout_marginTop="106dp"
+	        android:layout_marginLeft="10dp"
+	        android:textColor="@color/sys_gray"
+	        android:text="编辑任务" />
+		<TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textSize="12sp"
+	        android:layout_marginTop="128.5dp"
+	        android:layout_marginLeft="37.5dp"
+	        android:textColor="@color/sys_gray"
+	        android:text="取消任务" />
+        <ImageView
+            android:id="@+id/btn_0"
+	        android:layout_width="30dp"
+	        android:layout_height="30dp"
+			android:contentDescription="因故拖延"
+			android:layout_marginLeft="88dp" 
+			android:src="@drawable/btn_0" />
+        <ImageView
+            android:id="@+id/btn_1"
+	        android:layout_width="30dp"
+	        android:layout_height="30dp"
+			android:contentDescription="无故拖延"
+			android:layout_marginLeft="60.5dp" 
+			android:layout_marginTop="23dp"
+			android:src="@drawable/btn_1" />
+        <ImageView
+            android:id="@+id/btn_2"
+	        android:layout_width="30dp"
+	        android:layout_height="30dp"
+			android:contentDescription="完成任务"
+			android:layout_marginTop="60dp"
+			android:layout_marginLeft="50.5dp"
+			android:src="@drawable/btn_2" />
+        <ImageView
+            android:id="@+id/btn_3"
+	        android:layout_width="30dp"
+	        android:layout_height="30dp"
+			android:contentDescription="编辑任务"
+			android:layout_marginLeft="60.5dp" 
+			android:layout_marginTop="97.5dp"
+			android:src="@drawable/btn_3" />
+        <ImageView
+            android:id="@+id/btn_4"
+	        android:layout_width="30dp"
+	        android:layout_height="30dp"
+			android:contentDescription="取消任务"
+			android:layout_marginLeft="88dp" 
+			android:layout_marginTop="120dp"
+			android:src="@drawable/btn_4" />
+    </RelativeLayout>-->
+</RelativeLayout>

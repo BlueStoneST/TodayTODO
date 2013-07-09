@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="sys_blue">#3399ff</color>
+    <color name="sys_gray">#969696</color>
+    <color name="sys_green">#00CC00</color>
+    <color name="sys_red">#FF3300</color>
+    <color name="sys_transparent">#95FFFFFF</color>
+    
+</resources>
