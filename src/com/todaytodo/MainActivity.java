@@ -79,6 +79,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+/**
+ * 
+ * @author Sunny
+ * @date 2013/7/9
+ * 
+ */
+
 public class MainActivity extends ActivityBase {
 	//public data elements
 	private ThingList thingList = new ThingList();
