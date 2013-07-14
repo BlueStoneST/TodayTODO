@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+	    <RelativeLayout
+		    android:orientation="vertical"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:padding="10dp">
+		    
+		<LinearLayout
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerVertical="true">
+		    <TextView
+		        android:id="@+id/vs_week_textView"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="上周一"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+		    <TextView
+	            android:id="@+id/vs_date_textView"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="2013-6-1"
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textColor="@color/sys_gray"/>
+	   	</LinearLayout>
+	    	
+		<LinearLayout
+		    android:layout_width="150dp"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+		    android:orientation="horizontal"
+		    android:gravity="right">
+	
+			<TextView
+			    android:id="@+id/vs_ach_num_textView"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="20"
+			    android:textColor="@color/sys_green"
+			    android:textSize="30dp" />
+		 	<TextView
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="/"
+			    android:textColor="@color/sys_gray"
+			    android:textSize="30dp" />
+		    <TextView
+		        android:id="@+id/vs_sum_textView"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textSize="30dp"
+		        android:textColor="@color/sys_gray"
+		        android:text="30"/>
+	    </LinearLayout>
+	    
+	</RelativeLayout>
+	<View  
+		android:layout_width="fill_parent"  
+		android:layout_height="0.5dp" 
+		android:background="@color/sys_blue"
+	/>
+</LinearLayout>

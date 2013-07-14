@@ -14,6 +14,7 @@ public class ThingList extends ModelBase{
 	private List<Thing> thingList = new ArrayList<Thing>();
 	private MyDate date;
 	private User user;
+	private String summary = "";
 	
 	public ThingList(){
 		super();
@@ -22,6 +23,9 @@ public class ThingList extends ModelBase{
 	public ThingList(JSONObject obj, User user) throws JSONException{
 		super(obj);
 		date = new MyDate(obj.getLong("date"));
+		if(obj.has("summary")){
+			summary = obj.getString("summary");
+		}
 		JSONArray array = obj.getJSONArray("thingList");
 		for(int i = 0;i<array.length();i++){
 			Thing thing = new Thing((JSONObject)array.get(i),this);
@@ -54,6 +58,14 @@ public class ThingList extends ModelBase{
 		this.user = user;
 	}
 
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject obj = new JSONObject();
@@ -65,6 +77,7 @@ public class ThingList extends ModelBase{
 				array.put(thing.toJSONObject());
 			}
 			obj.put("thingList", array);
+			obj.put("summary", summary);
 			obj.put("user", user.getId());
 		} catch (JSONException e) {
 			e.printStackTrace();

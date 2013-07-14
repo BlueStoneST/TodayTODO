@@ -152,5 +152,24 @@ public class ControllerCenter {
 		}
 		return aToken.getOAuthAccessToken();
 	}
+	
+	public List<WeekStatisticUnit> getWeekStatisitic(){
+		//按日期从大到小排列
+		List<WeekStatisticUnit> resultList = new ArrayList<WeekStatisticUnit>();
+		List<ThingList> thingListList = modelCenter.getUser().getThingListList();
+		
+		for(int i = 6; i >= 0; i--){
+			ThingList list = this.getThingList( 0 - i );
+			if(list != null){
+				resultList.add(new WeekStatisticUnit(list));
+			}
+		}
+		return resultList;
+	}
+	
+	public void saveThingList(ThingList thingList, String summary){
+		thingList.setSummary(summary);
+		modelCenter.save();
+	}
 
 }

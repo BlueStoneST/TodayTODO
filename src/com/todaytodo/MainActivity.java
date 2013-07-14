@@ -69,6 +69,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -87,33 +88,33 @@ import android.widget.AdapterView.OnItemClickListener;
  */
 
 public class MainActivity extends ActivityBase {
-	//public data elements
+	// public data elements
 	private ThingList thingList = new ThingList();
 	private int daysAfterToday = 0;
 	private boolean animateLock = false;
-	//public interface elements
+	// public interface elements
 	private LinearLayout layout;
 	private ScrollView scroll;
 	private TextView refreshText;
-	//value for pull-down
+	// value for pull-down
 	private int startY;
 	private int currentY;
 	private boolean record = false;
 	private boolean pRecord = false;
-	//static value for pull-down
+	// static value for pull-down
 	private static int VAL_REFRESH_HEIGHT = 50;
 	private static int VAL_RESPONSE_DISTANCE = 80;
-	//value for finish
+	// value for finish
 	private int startX;
 	private int startYff;
 	private int currentX;
 	private int currentYff;
 	private Thing currentThing;
 	private boolean recordFF = false;
-	//static value for finish
+	// static value for finish
 	private static final int VAL_MAX_Y_DISTANCE = 50;
 	private static final int VAL_MIN_X_DISTANCE = 100;
-	//about weibo
+	// about weibo
 	private Weibo mWeibo;
 	private static final String CONSUMER_KEY = "3453800613";// 替换为开发者的appkey，例如"1646212860";
 	private static final String REDIRECT_URL = "http://www.zaishangke.com";
@@ -124,28 +125,27 @@ public class MainActivity extends ActivityBase {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		//step0,initial const
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int height = dm.heightPixels;
-        VAL_REFRESH_HEIGHT = height / 14;
-        VAL_RESPONSE_DISTANCE = height / 9;
+		// step0,initial const
+		DisplayMetrics dm = new DisplayMetrics();
+		getWindowManager().getDefaultDisplay().getMetrics(dm);
+		int height = dm.heightPixels;
+		VAL_REFRESH_HEIGHT = height / 14;
+		VAL_RESPONSE_DISTANCE = height / 9;
 		System.out.println(VAL_REFRESH_HEIGHT + "," + VAL_RESPONSE_DISTANCE);
-        
+
 		Intent intent = this.getIntent();
-		//step1, initialize the public interface elements
+		// step1, initialize the public interface elements
 		layout = (LinearLayout) this.findViewById(R.id.list_layout);
 		scroll = (ScrollView) this.findViewById(R.id.scroll_layout);
-		refreshText = (TextView) this
-				.findViewById(R.id.refresh_textView);
+		refreshText = (TextView) this.findViewById(R.id.refresh_textView);
 		// Down-insert motion of Scroll
 		scroll.setOnTouchListener(pullDownTouchListener);
-		//start the service
+		// start the service
 		Intent intentTS = new Intent(this, AlarmService.class);
 		startService(intentTS);
-		//judge the action and refresh the content
+		// judge the action and refresh the content
 		String action = intent.getAction();
-		if(action!=null || action.equals("")){
+		if (action != null || action.equals("")) {
 			NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 			if (action.equals("tomorrow_tip")) {
 				thingList = controller.getThingList(1);
@@ -155,15 +155,15 @@ public class MainActivity extends ActivityBase {
 			} else if (action.equals("today_tip")) {
 				getListAction(0);
 				nManager.cancel(0x0001);
-			}else{
+			} else {
 				getListAction(0);
 			}
 		} else {
 			getListAction(0);
 		}
 		refreshTitle();
-		
-		//next and last image button action
+
+		// next and last image button action
 		View nextView = this.findViewById(R.id.next_imageView);
 		nextView.setOnClickListener(new View.OnClickListener() {
 
@@ -183,11 +183,12 @@ public class MainActivity extends ActivityBase {
 			}
 
 		});
-		
-		bindWeibo();
+
+		// TODO weibo binding
+		// bindWeibo();
 	}
 
-	//after insert result
+	// after insert result
 	@Override
 	public void onActivityResult(int request, int result, Intent intent) {
 		if (intent != null) {
@@ -197,8 +198,7 @@ public class MainActivity extends ActivityBase {
 				refreshList();
 				Toast.makeText(getApplicationContext(), "完成任务添加",
 						Toast.LENGTH_SHORT).show();
-			} else if (intent.getAction()
-					.equals("modify_return")) {
+			} else if (intent.getAction().equals("modify_return")) {
 				thingList = (ThingList) controller.getSession().get("list");
 				daysAfterToday = thingList.getDate().getDaysAfterToday();
 				refreshList();
@@ -212,11 +212,15 @@ public class MainActivity extends ActivityBase {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add("添加任务");
+		menu.add(1, 4, 4, "退出");
+		menu.add(1, 3, 3, "设置");
+		menu.add(1, 2, 2, "今日统计");
+		menu.add(1, 1, 1, "本周统计");
+		menu.add(1, 0, 0, "同步印象笔记");
 		return true;
 	}
 
-	//create context menu
+	// create context menu
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view,
 			ContextMenuInfo menuInfo) {
@@ -308,18 +312,51 @@ public class MainActivity extends ActivityBase {
 
 	}
 
-	//create menu
+	// create menu
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case 0:
-			insertThing();
+			mEvernoteSession.authenticate(this);
+			break;
+		case 1:
+			Intent intent = new Intent(MainActivity.this, WeekStatisticsActivity.class);
+			startActivityForResult(intent, 0);
+			break;
+		case 2:
+			LayoutInflater inflater = (LayoutInflater) this
+					.getSystemService(LAYOUT_INFLATER_SERVICE);
+			View v = inflater.inflate(R.layout.dialog_statistics,
+					(ViewGroup) this.findViewById(R.id.daily_statistic_Layout));
+			final EditText descriptionTextView = (EditText) v.findViewById(R.id.des_editText);
+			TextView numTextView = (TextView) v.findViewById(R.id.achieve_tomato_textView);
+			TextView sumTextView = (TextView) v.findViewById(R.id.sum_tomato_textView);
+			numTextView.setText(Integer.toString(tomatoFinished));
+			sumTextView.setText(Integer.toString(tomato));
+			descriptionTextView.setText(thingList.getSummary());
+			AlertDialog dialog = new AlertDialog.Builder(this)
+					.setView(v)
+					.setPositiveButton("保存",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int which) {
+									String summary = descriptionTextView.getText().toString();
+									controller.saveThingList(thingList, summary);
+								}
+							}).setNegativeButton("关闭", new OnClickListener(){
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									//Do nothing
+								}
+							}).create();
+			
+			dialog.show();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	
-	//thing operator view-action
+	// thing operator view-action
 	private void insertThing() {
 		controller.getSession().put("list", thingList);
 		Intent intent = new Intent(MainActivity.this, InsertActivity.class);
@@ -524,32 +561,20 @@ public class MainActivity extends ActivityBase {
 		view2.setText("累计番茄:" + model.getUser().getTomato());
 	}
 
+	private int tomato = 0;
+	private int tomatoFinished = 0;
 	
-	//**important**
-	//the core function of this activity. refresh the activity interface by ThingList
+	// **important**
+	// the core function of this activity. refresh the activity interface by
+	// ThingList
 	private void refreshList() {
 		MyDate date = thingList.getDate();
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String d0 = df.format(date);
-		String d1 = "";
-		if (date.getDaysAfterToday() == 0) {
-			d1 = "今天";
-		} else if (date.getDaysAfterToday() == 1) {
-			d1 = "明天";
-		} else if (date.getDaysAfterToday() == -1) {
-			d1 = "昨天";
-		} else if (date.getDaysAfterToday() < -1) {
-			d1 = Math.abs(date.getDaysAfterToday()) + "天前";
-		} else {
-			d1 = date.getDaysAfterToday() + "天后";
-		}
 		TextView textView = (TextView) this.findViewById(R.id.textViewDate);
-		textView.setText(d0 + "(" + d1 + ")");
-
+		textView.setText(date.toStr(true));
+		tomato = 0;
+		tomatoFinished = 0;
 		LayoutInflater mInflater = LayoutInflater.from(this);
 		layout.removeAllViews();
-		int tomato = 0;
-		int tomatoFinished = 0;
 		for (final Thing thing : thingList.getThingList()) {
 			tomato += thing.getTomato();
 			View convertView = mInflater.inflate(R.layout.vlist, null);
@@ -597,7 +622,8 @@ public class MainActivity extends ActivityBase {
 				holder.stateText.setTextColor(MainActivity.this.getResources()
 						.getColor(R.color.sys_gray));
 				if (daysAfterToday == 0) {
-					convertView.setOnTouchListener(new FlingRightTouchListener(thing));
+					convertView.setOnTouchListener(new FlingRightTouchListener(
+							thing));
 				}
 			} else if (state.equals("dwc")) {
 				holder.infoButton.setImageDrawable(MainActivity.this
@@ -661,26 +687,26 @@ public class MainActivity extends ActivityBase {
 		textView2.setText(comeOnWords);
 
 	}
-	
-	//listener to deal with fling right of the thing
-	class FlingRightTouchListener implements OnTouchListener{
+
+	// listener to deal with fling right of the thing
+	class FlingRightTouchListener implements OnTouchListener {
 		private Thing thing;
-		
-		public FlingRightTouchListener(Thing thing){
+
+		public FlingRightTouchListener(Thing thing) {
 			this.thing = thing;
 		}
-		
+
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
-			System.out.println("list" + event.getAction() + " "
-					+ event.getX() + "," + event.getY());
+			System.out.println("list" + event.getAction() + " " + event.getX()
+					+ "," + event.getY());
 
 			switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				// Toast.makeText(getApplicationContext(),
 				// Float.toString(event.getX()), 0).show();
 				// Toast.LENGTH_SHORT).show();
-				//System.out.println("#the x is" + event.getX());
+				// System.out.println("#the x is" + event.getX());
 				currentThing = thing;
 				startX = (int) event.getX();
 				startYff = (int) event.getY();
@@ -688,8 +714,8 @@ public class MainActivity extends ActivityBase {
 				break;
 			case MotionEvent.ACTION_UP:
 				if (recordFF) {
-//					System.out.println("the x is"
-//							+ event.getX());
+					// System.out.println("the x is"
+					// + event.getX());
 					recordFF = false;
 					currentYff = (int) event.getY();
 					currentX = (int) event.getX();
@@ -703,11 +729,11 @@ public class MainActivity extends ActivityBase {
 			return false;
 			// return gd.onTouchEvent(event);
 		}
-		
+
 	}
-	
-	//listener to deal with pull down of the scroll view
-	OnTouchListener pullDownTouchListener = new OnTouchListener(){
+
+	// listener to deal with pull down of the scroll view
+	OnTouchListener pullDownTouchListener = new OnTouchListener() {
 
 		@Override
 		public boolean onTouch(View v, MotionEvent event) {
@@ -719,7 +745,7 @@ public class MainActivity extends ActivityBase {
 				// Toast.makeText(getApplicationContext(),
 				// "!"+scroll.getScrollY(), 0).show();
 				switch (event.getAction()) {
-				
+
 				case MotionEvent.ACTION_MOVE:
 					if (!record) {
 						if (scroll.getScrollY() == 0) {
@@ -745,11 +771,11 @@ public class MainActivity extends ActivityBase {
 								} else {
 									refreshText.setText("下拉添加任务...");
 								}
-//								int marginTop = (int)(Math.sqrt(currentY
-//										- startY - VAL_RESPONSE_DISTANCE) * 6) - 50;
+								// int marginTop = (int)(Math.sqrt(currentY
+								// - startY - VAL_RESPONSE_DISTANCE) * 6) - 50;
 								((MarginLayoutParams) refreshLayout
 										.getLayoutParams()).height = getDistance();
-								//System.out.println(marginTop);
+								// System.out.println(marginTop);
 								refreshLayout.requestLayout();
 							}
 							return true;
@@ -763,8 +789,7 @@ public class MainActivity extends ActivityBase {
 						if (getDistance() > VAL_REFRESH_HEIGHT) {
 							insertThing();
 						}
-						((MarginLayoutParams) refreshLayout
-								.getLayoutParams()).height = 0;
+						((MarginLayoutParams) refreshLayout.getLayoutParams()).height = 0;
 						refreshText.setText("下拉添加任务...");
 						refreshLayout.requestLayout();
 					}
@@ -772,7 +797,7 @@ public class MainActivity extends ActivityBase {
 						// Toast.makeText(getApplicationContext(),
 						// "+"+event.getX(),
 						// Toast.LENGTH_SHORT).show();
-						//System.out.println("the x is" + event.getX());
+						// System.out.println("the x is" + event.getX());
 						recordFF = false;
 						currentYff = (int) event.getY();
 						currentX = (int) event.getX();
@@ -786,12 +811,11 @@ public class MainActivity extends ActivityBase {
 			}
 			return false;
 		}
-		
+
 	};
-	
-	private int getDistance(){
-		return (int)(Math.sqrt(currentY - startY 
-				- VAL_RESPONSE_DISTANCE)*8);
+
+	private int getDistance() {
+		return (int) (Math.sqrt(currentY - startY - VAL_RESPONSE_DISTANCE) * 8);
 	}
 
 	public final class ViewHolder {
@@ -801,14 +825,14 @@ public class MainActivity extends ActivityBase {
 		public TextView stateText;
 	}
 
-	private void bindWeibo(){
+	private void bindWeibo() {
 		mWeibo = Weibo.getInstance(CONSUMER_KEY, REDIRECT_URL);
 		accessToken = controller.getToken();
 		if (accessToken == null) {
-			mWeibo.authorize(MainActivity.this,new AuthDialogListener());
+			mWeibo.authorize(MainActivity.this, new AuthDialogListener());
 		}
 	}
-	
+
 	class AuthDialogListener implements WeiboAuthListener {
 
 		@Override
@@ -827,11 +851,12 @@ public class MainActivity extends ActivityBase {
 					e.printStackTrace();
 				}
 				controller.saveToken(accessToken);
-				Toast.makeText(MainActivity.this, "链接微博成功", Toast.LENGTH_SHORT).show();
-				//TODO read photo and name
+				Toast.makeText(MainActivity.this, "链接微博成功", Toast.LENGTH_SHORT)
+						.show();
+				// TODO read photo and name
 				UsersAPI usersApi = new UsersAPI(accessToken);
-				
-				usersApi.show(values.getLong("uid"), new RequestListener(){
+
+				usersApi.show(values.getLong("uid"), new RequestListener() {
 
 					@Override
 					public void onComplete(String str) {
@@ -840,26 +865,26 @@ public class MainActivity extends ActivityBase {
 							JSONObject obj = new JSONObject(str);
 							String pic = obj.getString("avatar_large");
 							String name = obj.getString("name");
-							
+
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						
+
 					}
 
 					@Override
 					public void onError(WeiboException arg0) {
 						// TODO Auto-generated method stub
-						
+
 					}
 
 					@Override
 					public void onIOException(IOException arg0) {
 						// TODO Auto-generated method stub
-						
+
 					}
-					
+
 				});
 			}
 		}

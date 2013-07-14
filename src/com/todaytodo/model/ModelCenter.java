@@ -24,6 +24,7 @@ public class ModelCenter {
 	private static ModelCenter uniqueInstance;
 	private static final String FILE_NAME = "today_todo.ini";
 	private static final String DIR_NAME = "todaytodo";
+	private static final int SAVING_DAYS = 7;
 	private File sdCardDir = Environment.getExternalStorageDirectory();
 	
 	private File getFile(){
@@ -109,7 +110,7 @@ public class ModelCenter {
 		boolean hasToday = false;
 		boolean hasTomorrow = false;
 		for(ThingList thingList : user.getThingListList()){
-			if(thingList.getDate().getDaysAfterToday()<-3){
+			if(thingList.getDate().getDaysAfterToday()< 0 - SAVING_DAYS){
 				thingToDelList.add(thingList);
 			}
 			if(thingList.getDate().getDaysAfterToday()==0){

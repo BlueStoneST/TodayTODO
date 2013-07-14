@@ -106,22 +106,8 @@ public class InsertActivity extends ActivityBase {
 		});
 		
 		MyDate date = thingList.getDate();
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-		String d0 = df.format(date);
-		String d1 = "";
-		if (date.getDaysAfterToday() == 0) {
-			d1 = "今天";
-		} else if (date.getDaysAfterToday() == 1) {
-			d1 = "明天";
-		} else if (date.getDaysAfterToday() == -1) {
-			d1 = "昨天";
-		} else if (date.getDaysAfterToday() < -1) {
-			d1 = Math.abs(date.getDaysAfterToday()) + "天前";
-		} else {
-			d1 = date.getDaysAfterToday() + "天后";
-		}
 		TextView textView = (TextView) this.findViewById(R.id.thingTime_textView);
-		textView.setText("任务发布于：" + d0 + "(" + d1 + ")");
+		textView.setText("任务发布于：" + date.toStr(true));
 	}
 	
 	private void refreshText(){
