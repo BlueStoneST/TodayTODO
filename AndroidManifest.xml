@@ -38,9 +38,6 @@
             android:label="@string/title_activity_insert" >
         </activity>
 
-        <service android:name="com.todaytodo.service.AlarmService" >
-        </service>
-
         <receiver android:name="com.todaytodo.service.SysBroadcast" >
         </receiver>
 
@@ -48,10 +45,17 @@
             android:name="com.todaytodo.WeekStatisticsActivity"
             android:label="@string/title_activity_week_statistics" >
         </activity>
-        
         <activity
             android:name="com.evernote.client.android.EvernoteOAuthActivity"
-            android:configChanges="orientation|keyboardHidden"/>
+            android:configChanges="orientation|keyboardHidden" />
+        <activity
+            android:name="com.todaytodo.SettingActivity"
+            android:label="@string/title_activity_setting"
+            android:parentActivityName="com.todaytodo.ActivityBase" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.todaytodo.ActivityBase" />
+        </activity>
     </application>
 
 </manifest>

@@ -87,18 +87,20 @@ public class MyDate extends Date {
 		String d0 = df.format(this);
 		String d1 = "";
 		if(daysAfterOn){
+			d1 += "(";
 			if (this.getDaysAfterToday() == 0) {
-				d1 = "今天";
+				d1 += "今天";
 			} else if (this.getDaysAfterToday() == 1) {
-				d1 = "明天";
+				d1 += "明天";
 			} else if (this.getDaysAfterToday() == -1) {
-				d1 = "昨天";
+				d1 += "昨天";
 			} else if (this.getDaysAfterToday() < -1) {
-				d1 = Math.abs(this.getDaysAfterToday()) + "天前";
+				d1 += Math.abs(this.getDaysAfterToday()) + "天前";
 			} else {
-				d1 = this.getDaysAfterToday() + "天后";
+				d1 += this.getDaysAfterToday() + "天后";
 			}
+			d1 += ")";
 		}
-		return d0 + "(" + d1 + ")";
+		return d0 + d1;
 	}
 }

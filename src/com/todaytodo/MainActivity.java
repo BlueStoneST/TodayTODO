@@ -7,16 +7,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.evernote.client.android.EvernoteSession;
+import com.evernote.client.android.InvalidAuthenticationException;
+import com.todaytodo.control.EvernoteSyncCallback;
 import com.todaytodo.model.ModelCenter;
 import com.todaytodo.model.Thing;
 import com.todaytodo.model.ThingList;
 import com.todaytodo.service.AlarmService;
+import com.todaytodo.service.NotificationService;
 import com.todaytodo.service.SysBroadcast;
 import com.todaytodo.util.AccessTokenKeeper;
+import com.todaytodo.util.Global;
 import com.todaytodo.util.MyDate;
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
@@ -35,6 +41,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -141,9 +148,49 @@ public class MainActivity extends ActivityBase {
 		// Down-insert motion of Scroll
 		scroll.setOnTouchListener(pullDownTouchListener);
 		// start the service
-		Intent intentTS = new Intent(this, AlarmService.class);
-		startService(intentTS);
+		AlarmService.getInstance(this);
 		// judge the action and refresh the content
+		
+		ImageView infoView = (ImageView)this.findViewById(R.id.main_info_imageView);
+		infoView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View view) {
+				LayoutInflater inflater = (LayoutInflater) MainActivity.this
+						.getSystemService(LAYOUT_INFLATER_SERVICE);
+				View v = inflater.inflate(R.layout.dialog_statistics,
+						(ViewGroup) MainActivity.this.findViewById(R.id.daily_statistic_Layout));
+				final EditText descriptionTextView = (EditText) v
+						.findViewById(R.id.des_editText);
+				TextView numTextView = (TextView) v
+						.findViewById(R.id.achieve_tomato_textView);
+				TextView sumTextView = (TextView) v
+						.findViewById(R.id.sum_tomato_textView);
+				numTextView.setText(Integer.toString(tomatoFinished));
+				sumTextView.setText(Integer.toString(tomato));
+				descriptionTextView.setText(thingList.getSummary());
+				AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+						.setView(v)
+						.setPositiveButton("保存",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int which) {
+										String summary = descriptionTextView
+												.getText().toString();
+										controller
+												.saveThingList(thingList, summary);
+									}
+								}).setNegativeButton("关闭", new OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								// Do nothing
+							}
+						}).create();
+
+				dialog.show();
+			}
+		});
+		
 		String action = intent.getAction();
 		if (action != null || action.equals("")) {
 			NotificationManager nManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -161,7 +208,7 @@ public class MainActivity extends ActivityBase {
 		} else {
 			getListAction(0);
 		}
-		refreshTitle();
+		//refreshTitle();
 
 		// next and last image button action
 		View nextView = this.findViewById(R.id.next_imageView);
@@ -214,7 +261,6 @@ public class MainActivity extends ActivityBase {
 		super.onCreateOptionsMenu(menu);
 		menu.add(1, 4, 4, "退出");
 		menu.add(1, 3, 3, "设置");
-		menu.add(1, 2, 2, "今日统计");
 		menu.add(1, 1, 1, "本周统计");
 		menu.add(1, 0, 0, "同步印象笔记");
 		return true;
@@ -308,49 +354,78 @@ public class MainActivity extends ActivityBase {
 					});
 			menu.add(0, 2, 0, "返回");
 		}
-		// if tomorrow
-
 	}
 
 	// create menu
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case 0:
-			mEvernoteSession.authenticate(this);
+			if (mEvernoteSession.isLoggedIn()) {
+				final NotificationService ns = new NotificationService(
+						MainActivity.this);
+				ns.sendBeginSyncNotification(MainActivity.class);
+				controller.sync(new EvernoteSyncCallback() {
+
+					@Override
+					public void success() {
+
+						ns.sendSyncNotification(MainActivity.class);
+					}
+
+					@Override
+					public void error(String result) {
+						Toast.makeText(MainActivity.this, result,
+								Toast.LENGTH_LONG).show();
+					}
+
+				});
+			} else {
+				final String[] items = { "绑定到Evernote（国际版）", "绑定到印象笔记" };
+				Builder builder = new Builder(MainActivity.this);
+				builder.setItems(items, new DialogInterface.OnClickListener() {
+
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						switch (which) {
+						case 0:
+							if (!Global.IS_TEST) {
+								mEvernoteSession
+										.setEvernoteService(EvernoteSession.EvernoteService.PRODUCTION);
+							} else {
+								mEvernoteSession
+										.setEvernoteService(EvernoteSession.EvernoteService.SANDBOX);
+							}
+							mEvernoteSession.authenticate(MainActivity.this);
+							break;
+						case 1:
+							if (!Global.IS_TEST) {
+								mEvernoteSession
+										.setEvernoteService(EvernoteSession.EvernoteService.CHINA);
+							} else {
+								mEvernoteSession
+										.setEvernoteService(EvernoteSession.EvernoteService.SANDBOX);
+							}
+							mEvernoteSession.authenticate(MainActivity.this);
+							break;
+						}
+					}
+
+				}).create().show();
+				
+			}
 			break;
 		case 1:
-			Intent intent = new Intent(MainActivity.this, WeekStatisticsActivity.class);
+			Intent intent = new Intent(MainActivity.this,
+					WeekStatisticsActivity.class);
 			startActivityForResult(intent, 0);
 			break;
-		case 2:
-			LayoutInflater inflater = (LayoutInflater) this
-					.getSystemService(LAYOUT_INFLATER_SERVICE);
-			View v = inflater.inflate(R.layout.dialog_statistics,
-					(ViewGroup) this.findViewById(R.id.daily_statistic_Layout));
-			final EditText descriptionTextView = (EditText) v.findViewById(R.id.des_editText);
-			TextView numTextView = (TextView) v.findViewById(R.id.achieve_tomato_textView);
-			TextView sumTextView = (TextView) v.findViewById(R.id.sum_tomato_textView);
-			numTextView.setText(Integer.toString(tomatoFinished));
-			sumTextView.setText(Integer.toString(tomato));
-			descriptionTextView.setText(thingList.getSummary());
-			AlertDialog dialog = new AlertDialog.Builder(this)
-					.setView(v)
-					.setPositiveButton("保存",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									String summary = descriptionTextView.getText().toString();
-									controller.saveThingList(thingList, summary);
-								}
-							}).setNegativeButton("关闭", new OnClickListener(){
-								@Override
-								public void onClick(DialogInterface dialog,
-										int which) {
-									//Do nothing
-								}
-							}).create();
-			
-			dialog.show();
+		case 3:
+			Intent intentSetting = new Intent(MainActivity.this,
+					SettingActivity.class);
+			startActivityForResult(intentSetting, 0);
+			break;
+		case 4:
+			MainActivity.this.finish();
 			break;
 		}
 		return super.onOptionsItemSelected(item);
@@ -387,7 +462,7 @@ public class MainActivity extends ActivityBase {
 	private void achieveThing(Thing thing) {
 		controller.achieveThing(thing);
 		MainActivity.this.refreshList();
-		MainActivity.this.refreshTitle();
+		//MainActivity.this.refreshTitle();
 		MediaPlayer player = MediaPlayer.create(this, R.raw.achieve);
 		player.start();
 		Toast.makeText(getApplicationContext(),
@@ -405,7 +480,7 @@ public class MainActivity extends ActivityBase {
 									int which) {
 								controller.delayThing(thing, "dwc", true);
 								MainActivity.this.refreshList();
-								MainActivity.this.refreshTitle();
+								//MainActivity.this.refreshTitle();
 								Toast.makeText(getApplicationContext(),
 										"明天请加油！", 0).show();
 							}
@@ -414,7 +489,7 @@ public class MainActivity extends ActivityBase {
 					public void onClick(DialogInterface arg0, int arg1) {
 						controller.delayThing(thing, "dwc", false);
 						MainActivity.this.refreshList();
-						MainActivity.this.refreshTitle();
+						//MainActivity.this.refreshTitle();
 						Toast.makeText(getApplicationContext(), "什么！怎么可以放弃！！",
 								0).show();
 					}
@@ -433,20 +508,19 @@ public class MainActivity extends ActivityBase {
 									int which) {
 								controller.delayThing(thing, "dwoc", true);
 								MainActivity.this.refreshList();
-								MainActivity.this.refreshTitle();
+								//MainActivity.this.refreshTitle();
 								Toast.makeText(
 										getApplicationContext(),
-										"无故不做任务，扣除" + thing.getTomato()
-												+ "个番茄！", 0).show();
+										"无故不做任务，不知羞耻！", 0).show();
 							}
 						}).setNegativeButton("不，我放弃了", new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface arg0, int arg1) {
 						controller.delayThing(thing, "dwoc", false);
 						MainActivity.this.refreshList();
-						MainActivity.this.refreshTitle();
+						//MainActivity.this.refreshTitle();
 						Toast.makeText(getApplicationContext(),
-								"无故不做任务，扣除" + thing.getTomato() + "个番茄！", 0)
+								"无故不做任务，不知羞耻！", 0)
 								.show();
 					}
 				}).create();
@@ -464,7 +538,7 @@ public class MainActivity extends ActivityBase {
 	private void redoThing(Thing thing) {
 		controller.redo(thing);
 		MainActivity.this.refreshList();
-		MainActivity.this.refreshTitle();
+		//MainActivity.this.refreshTitle();
 		Toast.makeText(getApplicationContext(), "任务恢复为完成状态", 0).show();
 	}
 
@@ -553,17 +627,21 @@ public class MainActivity extends ActivityBase {
 		}
 	}
 
-	private void refreshTitle() {
-		TextView view1 = (TextView) this.findViewById(R.id.user_textView);
-		view1.setText(model.getUser().getName());
-		TextView view2 = (TextView) this
-				.findViewById(R.id.user_tomato_textView);
-		view2.setText("累计番茄:" + model.getUser().getTomato());
-	}
+//	private void refreshTitle() {
+//		TextView view1 = (TextView) this.findViewById(R.id.user_textView);
+//		view1.setText(model.getUser().getName());
+//		TextView view2 = (TextView) this
+//				.findViewById(R.id.user_tomato_textView);
+//		view2.setText("累计番茄:" + model.getUser().getTomato());
+//	}
 
 	private int tomato = 0;
 	private int tomatoFinished = 0;
 	
+	private String[] sayings = {"“少壮不努力，老大徒伤悲。” —— 《长歌行》",
+			"“今日复今日，今日何其少！今日又不为，此事何时了？”——《今日歌》",
+			"“明日复明日，明日何其多！我生待明日，万事成蹉跎。”——《明日歌》"};
+
 	// **important**
 	// the core function of this activity. refresh the activity interface by
 	// ThingList
@@ -575,6 +653,13 @@ public class MainActivity extends ActivityBase {
 		tomatoFinished = 0;
 		LayoutInflater mInflater = LayoutInflater.from(this);
 		layout.removeAllViews();
+		if(thingList.getThingList().size()==0){
+			View convertView = mInflater.inflate(R.layout.empty_list, null);
+			layout.addView(convertView);
+			int value = (new Random()).nextInt(sayings.length);
+			TextView emptyTV = (TextView)convertView.findViewById(R.id.empty_textView);
+			emptyTV.setText(sayings[value]);
+		}
 		for (final Thing thing : thingList.getThingList()) {
 			tomato += thing.getTomato();
 			View convertView = mInflater.inflate(R.layout.vlist, null);

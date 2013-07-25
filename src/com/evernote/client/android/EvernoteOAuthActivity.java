@@ -44,7 +44,12 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import com.todaytodo.ActivityBase;
+import com.todaytodo.MainActivity;
 import com.todaytodo.R;
+import com.todaytodo.control.EvernoteSyncCallback;
+import com.todaytodo.service.NotificationService;
 import com.evernote.client.oauth.EvernoteAuthToken;
 import com.evernote.client.oauth.YinxiangApi;
 import com.evernote.edam.userstore.BootstrapInfo;
@@ -64,7 +69,7 @@ import java.util.ArrayList;
  *
  * class created by @tylersmithnet
  */
-public class EvernoteOAuthActivity extends Activity {
+public class EvernoteOAuthActivity extends ActivityBase {
   private static final String LOGTAG = "EvernoteOAuthActivity";
 
   static final String EXTRA_EVERNOTE_SERVICE = "EVERNOTE_HOST";
@@ -269,8 +274,33 @@ public class EvernoteOAuthActivity extends Activity {
       @Override
       public void run() {
         Toast.makeText(mActivity, success ? R.string.esdk__evernote_login_successful : R.string.esdk__evernote_login_failed, Toast.LENGTH_LONG).show();
+        if(success){
+        	if(controller.getSession().get("callback")!=null){
+        		EvernoteSyncCallback callback = (EvernoteSyncCallback)controller.getSession().get("callback");
+        		controller.sync(callback);
+        	}else{
+	        	final NotificationService ns = new NotificationService(mActivity);
+				ns.sendBeginSyncNotification(MainActivity.class);
+				controller.sync(new EvernoteSyncCallback() {
+	
+					@Override
+					public void success() {
+						
+						ns.sendSyncNotification(MainActivity.class);
+					}
+					
+					@Override
+					public void error(String result) {
+						Toast.makeText(mActivity, result, Toast.LENGTH_LONG).show();
+					}
+					
+				});
+        	}
+        }
         setResult(success ? RESULT_OK : RESULT_CANCELED);
         finish();
+        //TODO: if binding success 启动Share;
+        
       }
     });
   }

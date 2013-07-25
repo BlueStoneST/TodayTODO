@@ -103,10 +103,11 @@ public class BootstrapManager {
 
     mBootstrapServerUrls.clear();
     switch(service) {
+      case CHINA:
+    	mBootstrapServerUrls.add(EvernoteSession.HOST_CHINA);
+        break;
+      
       case PRODUCTION:
-        if (sChinaLocales.contains(mLocale)) {
-          mBootstrapServerUrls.add(EvernoteSession.HOST_CHINA);
-        }
         mBootstrapServerUrls.add(EvernoteSession.HOST_PRODUCTION);
         break;
 

@@ -9,9 +9,13 @@ import org.json.JSONObject;
 
 public class User extends ModelBase{
 	private List<ThingList> thingListList = new ArrayList<ThingList>();
+	private Setting setting = new Setting(this);
 	private String name;
 	private int tomato;
 	private String photo;
+	private String notebookId;
+	
+	//don't touch it. It's evil
 	private AccessToken accessToken;
 	
 	public User(){
@@ -25,8 +29,14 @@ public class User extends ModelBase{
 		if(obj.has("accessToken")){
 			accessToken = new AccessToken((JSONObject)obj.get("accessToken"),this);
 		}
+		if(obj.has("notebookId")){
+			notebookId = obj.getString("notebookId");
+		}
 		if(obj.has("photo")){
 			photo = obj.getString("photo");
+		}
+		if(obj.has("setting")){
+			setting = new Setting((JSONObject)obj.getJSONObject("setting"),this);
 		}
 		JSONArray array = obj.getJSONArray("thingListList");
 		for(int i = 0; i<array.length(); i++){
@@ -74,6 +84,22 @@ public class User extends ModelBase{
 		this.photo = photo;
 	}
 
+	public String getNotebookId() {
+		return notebookId;
+	}
+
+	public void setNotebookId(String notebookId) {
+		this.notebookId = notebookId;
+	}
+
+	public Setting getSetting() {
+		return setting;
+	}
+
+	public void setSetting(Setting setting) {
+		this.setting = setting;
+	}
+
 	@Override
 	public JSONObject toJSONObject() {
 		JSONObject obj = new JSONObject();
@@ -87,6 +113,10 @@ public class User extends ModelBase{
 			if(photo!=null){
 				obj.put("photo", photo);
 			}
+			if(notebookId != null){
+				obj.put("notebookId", notebookId);
+			}
+			obj.put("setting", setting.toJSONObject());
 			JSONArray array = new JSONArray();
 			for(ThingList thingList : thingListList){
 				array.put(thingList.toJSONObject());

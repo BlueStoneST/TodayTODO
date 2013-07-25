@@ -96,8 +96,8 @@ public class EvernoteSession {
    */
   public enum EvernoteService implements Parcelable {
     SANDBOX,
-    PRODUCTION;
-
+    PRODUCTION,
+    CHINA;
 
     @Override
     public int describeContents() {
@@ -368,4 +368,14 @@ public class EvernoteSession {
     CookieManager cookieManager = CookieManager.getInstance();
     cookieManager.removeAllCookie();
   }
+  
+  /**
+   * 
+   * @param service
+   */
+  public void setEvernoteService(EvernoteService service){
+	 this.mEvernoteService = service;
+	 mBootstrapManager = new BootstrapManager(mEvernoteService, mClientFactory);
+  }
+  
 }

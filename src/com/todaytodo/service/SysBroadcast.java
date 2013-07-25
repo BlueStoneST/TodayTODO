@@ -3,6 +3,7 @@ package com.todaytodo.service;
 import com.todaytodo.MainActivity;
 import com.todaytodo.R;
 import com.todaytodo.control.ControllerCenter;
+import com.todaytodo.control.EvernoteSyncCallback;
 import com.todaytodo.model.ModelCenter;
 import com.todaytodo.model.Thing;
 import com.todaytodo.model.ThingList;
@@ -19,13 +20,14 @@ import android.support.v4.app.NotificationCompat;
 
 public class SysBroadcast extends BroadcastReceiver {
 	private NotificationManager nManager;
-	private ControllerCenter controller = ControllerCenter.getInstance();
+	private ControllerCenter controller;
 	private final static int NOTIFICATION_ID0 = 0x0001;
 	private final static int NOTIFICATION_ID1 = 0x0002;
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		nManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		controller =  ControllerCenter.getInstance(context);
 		//thing all done or tip?
 		String action = intent.getAction();
 		if(action.equals("check_time")){
@@ -63,6 +65,21 @@ public class SysBroadcast extends BroadcastReceiver {
 			}
 		}else if(action.equals("daily_load")){
 			controller.daliyCheck();
+		}else if(action.equals("auto_sync")){
+			if(controller.getEvernoteSession().isLoggedIn()){
+				controller.sync(new EvernoteSyncCallback() {
+					
+					@Override
+					public void success() {
+						//do nothing
+					}
+					
+					@Override
+					public void error(String result) {
+						//do noting
+					}
+				});
+			}
 		}
 	}
 

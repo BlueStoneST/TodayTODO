@@ -2,8 +2,10 @@
 <resources>
     <color name="sys_blue">#3399ff</color>
     <color name="sys_gray">#969696</color>
+    <color name="sys_light_gray">#cccccc</color>
     <color name="sys_green">#00CC00</color>
     <color name="sys_red">#FF3300</color>
+    <color name="sys_white">#FFFFFF</color>
     <color name="sys_transparent">#95FFFFFF</color>
-    
+    <color name="sys_light_blue">#c9e6ff</color>
 </resources>
