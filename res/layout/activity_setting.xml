@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+	    <RelativeLayout
+		    android:orientation="vertical"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:padding="10dp">
+		    
+		<LinearLayout
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerVertical="true">
+		    <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="晚间消息提醒"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+		    <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="每日23:00"
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textColor="@color/sys_gray"/>
+	   	</LinearLayout>
+	    	
+		<LinearLayout
+		    android:layout_width="150dp"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+		    android:orientation="horizontal"
+		    android:gravity="right">
+
+			<CheckBox
+			    android:id="@+id/as_tip_checkBox"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="" />
+			
+	    </LinearLayout>
+	    
+	</RelativeLayout>
+	<View  
+		android:layout_width="fill_parent"  
+		android:layout_height="0.5dp" 
+		android:background="@color/sys_blue"
+	/>
+	
+	<RelativeLayout
+		    android:orientation="vertical"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:padding="10dp">
+		    
+		<LinearLayout
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerVertical="true">
+		    <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="自动处理未完成的任务"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+		    <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="每日0:30"
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textColor="@color/sys_gray"/>
+	   	</LinearLayout>
+	    	
+		<LinearLayout
+		    android:layout_width="150dp"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+		    android:orientation="horizontal"
+		    android:gravity="right">
+
+			<CheckBox
+			    android:id="@+id/as_deal_checkBox"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="" />
+			
+	    </LinearLayout>
+	    
+	</RelativeLayout>
+	<View  
+		android:layout_width="fill_parent"  
+		android:layout_height="0.5dp" 
+		android:background="@color/sys_blue"
+	/>
+	
+	<Button
+	    android:id="@+id/as_binding_button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:text="绑定到Evernote"/>
+	
+	<RelativeLayout
+	    	android:id="@+id/as_sync_layout"
+		    android:orientation="vertical"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+		    android:padding="10dp">
+		    
+		<LinearLayout
+		    android:orientation="vertical"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_centerVertical="true">
+		    <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="自动同步到印象笔记"
+		        android:textAppearance="?android:attr/textAppearanceMedium" />
+		    <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="每日0:30"
+	            android:textAppearance="?android:attr/textAppearanceSmall"
+	            android:textColor="@color/sys_gray"/>
+	   	</LinearLayout>
+	    	
+		<LinearLayout
+		    android:layout_width="150dp"
+		    android:layout_height="wrap_content"
+		    android:layout_alignParentRight="true"
+		    android:layout_centerVertical="true"
+		    android:orientation="horizontal"
+		    android:gravity="right">
+
+			<CheckBox
+			    android:id="@+id/as_sync_checkBox"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:text="" />
+			
+	    </LinearLayout>
+	    
+	</RelativeLayout>
+	
+	<View  
+		android:layout_width="fill_parent"  
+		android:layout_height="0.5dp" 
+		android:background="@color/sys_blue"
+	/>
+	
+	<LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+        <Button
+            android:id="@+id/as_save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="保存" />
+        <Button
+            android:id="@+id/as_cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="取消" />
+   </LinearLayout>
+	
+</LinearLayout>
