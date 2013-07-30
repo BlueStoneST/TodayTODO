@@ -76,28 +76,23 @@ public class AlarmService{
     
     public void setAlarm(boolean tipChange, boolean dealChange, boolean syncChange){
     	if(tipChange){
+    		setting.setAutoTip(!setting.isAutoTip());
     		if(setting.isAutoTip()){
     			submitTip();
     		}else{
     			cancelTip();
     		}
-    		setting.setAutoTip(!setting.isAutoTip());
     	}
     	if(dealChange){
-    		if(setting.isAutoDealThing()){
-    			submitDeal();
-    		}else{
-    			cancelDeal();
-    		}
     		setting.setAutoDealThing(!setting.isAutoDealThing());
     	}
     	if(syncChange){
+    		setting.setAutoSync(!setting.isAutoSync());
     		if(setting.isAutoSync()){
     			submitSync();
     		}else{
     			cancelSync();
     		}
-    		setting.setAutoSync(!setting.isAutoSync());
     	}
     	if(tipChange || dealChange || syncChange){
     		model.save();

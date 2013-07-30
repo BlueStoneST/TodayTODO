@@ -106,7 +106,6 @@ public class SettingActivity extends ActivityBase {
 			}
 		});
 		
-		
 	}
 	
 	private void refreshBinding(){

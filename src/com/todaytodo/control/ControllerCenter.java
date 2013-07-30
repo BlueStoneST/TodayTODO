@@ -107,9 +107,11 @@ public class ControllerCenter {
 		ThingList list = getThingList(-1);
 		int tomato = 0;
 		if (list != null) {
-			for (Thing thing : list.getThingList()) {
-				if (thing.getState().equals("unfi")) {
-					delayThingPrivate(thing, "dwoc", true);
+			if(modelCenter.getUser().getSetting().isAutoDealThing()){
+				for (Thing thing : list.getThingList()) {
+					if (thing.getState().equals("unfi")) {
+						delayThingPrivate(thing, "dwoc", true);
+					}
 				}
 			}
 			modelCenter.dailyRefresh();
