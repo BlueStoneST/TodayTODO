@@ -194,6 +194,7 @@ public class EvernoteSession {
       mAuthenticationResult = getAuthenticationResultFromPref(SessionPreferences.getPreferences(ctx));
     }
     mClientFactory = new ClientFactory(generateUserAgentString(ctx), ctx.getFilesDir());
+    System.out.println("what's up?!");
     mBootstrapManager = new BootstrapManager(mEvernoteService, mClientFactory);
   }
 
